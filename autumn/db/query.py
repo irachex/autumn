@@ -63,7 +63,7 @@ class Query(object):
         values = (1,) # values must be a tuple or list
         
         # Now we have the database cursor to use as we wish
-        cursor = Query.raw_swl(query, values)
+        cursor = Query.raw_sql(query, values)
         
     ``Query.sql(sql, values)`` has the same syntax as ``Query.raw_sql``, but 
     it returns a dictionary of the result, the field names being the keys.
@@ -120,7 +120,11 @@ class Query(object):
             return self.execute_query().fetchone()[0]
         else:
             return len(self.cache)
-        
+    
+    def distinct(self):
+        self.type = 'SELECT DISTINCT *'
+        return self
+            
     def filter(self, **kwargs):
         self.conditions.update(kwargs)
         return self

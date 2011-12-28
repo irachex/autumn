@@ -115,6 +115,9 @@ class Model(object):
         # Returns a Query object that can be sliced
         MyModel.get()
         
+        # find one row whose fields equals values, if not exists then create
+        MyModel.get_or_create(field=value)
+        
         # Returns a MyModel object with an id of 7
         m = MyModel.get(7)
         
@@ -249,6 +252,17 @@ class Model(object):
             return cls.get(**{cls.Meta.pk: _obj_pk})[0]
 
         return Query(model=cls, conditions=kwargs)
+    
+    @classmethod
+    def get_or_create(cls, **kwargs):
+        'Returns Model, if not exists then create'
+        query = Query(model=cls, conditions=kwargs)
+        obj = query[0]
+        if obj is None:
+            obj = cls(**kwargs)
+            obj.save()
+        return obj
+        
         
         
     class ValidationError(Exception):
